@@ -1,0 +1,202 @@
+<DOCTYPE html>
+<html lang="en" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">	
+    <link rel="icon" href="favicon.ico">
+    <title>Car Parts</title>
+	
+	<link rel="stylesheet" href="style.css">	
+	
+<!--	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+-->	
+	<script src="script.js"></script>  	
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  </head>      
+<!--
+<style>
+tr:hover{
+	background-color:gray;
+	cursor:pointer;
+}
+</style>
+-->  
+  <body>  
+	 <h1>Test Page for Car Parts</h1>	 	 
+	<div class="w3-bar w3-black topnav">
+		<a href="#home" class="w3-bar-item w3-button" onclick="makeGetRequest('/home')">Home</a>  
+		<a href="#clients" class="w3-bar-item w3-button" onclick="makeGetRequest('/list/clients')">Clients</a>
+		<a href="#articles" class="w3-bar-item w3-button" onclick="makeGetRequest('/list/articles')">Articles</a>
+		<a href="#orders" class="w3-bar-item w3-button" onclick="makeGetRequest('/list/orders')">Orders</a>	  
+		<a href="#scratchpad" class="w3-bar-item w3-button" onclick="makeGetRequest('/list/scratchpad')">Scratchpad</a>
+		<a href="#whoami" class="w3-bar-item w3-button" onclick="makeGetRequest('/whoami')">Who are we ?</a>
+		<a href="#language" class="w3-bar-item w3-button" onclick="switchLanguage()" id = "Language" >Language: English</a>		
+		  <div class="search-container topnav">
+			<form action="">
+			  <input type="text" placeholder="Search.." name="search">  
+			  <button type="submit"><i class="fa fa-search"></i></button>
+			</form>
+		  </div>
+	</div>
+<!--	 	 
+		<div class="tab">
+		  <button class="tablinks" onclick="openCity(event, 'Tab1')" id="defaultOpen">Clients</button>
+		  <button class="tablinks" onclick="openCity(event, 'Tab2')">Orders</button>
+		  <button class="tablinks" onclick="openCity(event, 'Tab3')">Items</button>
+		</div>	  
+-->		 		 
+<!--	 <div id="panel" class="tabcontent mypanel" style="overflow-x:scroll; height:680px;">	  -->
+	 <div id="panel" class="mypanel" style="overflow-x:scroll; height:800px;">
+		<img src="cox.jpg">	 	 
+	 </div>
+	 
+	<footer>
+		 <div id="status" class="mystatus"><br></div>
+		<div>Author: Mathias Dürrenberger <a href="mailto:durrem@bluewin.ch">durrem@bluewin.ch</a> Copyright 2021</div>
+	</footer>   	 
+  </body>  
+  
+	<script>
+$.delete = function(url, data, callback, type){
+ 
+  if ( $.isFunction(data) ){
+    type = type || callback,
+        callback = data,
+        data = {}
+  }
+ 
+  return $.ajax({
+    url: url,
+    type: 'DELETE',
+    success: callback,
+    data: data,
+    contentType: type
+  });
+}
+
+
+		function makeGetRequest( url ) {			
+			$.get( url, function( data ) {
+				document.getElementById("panel").innerHTML = data;
+				document.getElementById("status").innerHTML = "<br>";
+			});
+		} 				
+		
+		function makePostRequest( url, form ) {	
+			var formData = JSON.stringify($("#postdata").serializeArray());				
+			$.post( url, formData, function( data ) {
+				document.getElementById("panel").innerHTML = data;
+				document.getElementById("status").innerHTML = "<br>";
+			});
+		} 				
+		
+		
+	  function handleSubmit(myurl, formdata) {				
+		var formData = JSON.stringify(formdata, null, 2);		
+		$.post( {url: myurl, data: formData, contentType: 'application/json; charset=utf-8' }, function( data ) {
+			document.getElementById("panel").innerHTML = data;
+			document.getElementById("status").innerHTML = "<br>";
+		});				
+	  }		
+
+
+	  function makeDeleteRequest(myurl, formdata) {
+			var formData = JSON.stringify(formdata, null, 2);		
+			$.delete( myurl, formData, function( data ) {
+				document.getElementById("panel").innerHTML = data;
+				document.getElementById("status").innerHTML = "<br>";
+			}, 'application/json; charset=utf-8'			
+			);	  	  			
+	  }
+
+
+	  function handlePostStatus( myurl ) {
+		$.post( {url: myurl, contentType: 'application/json; charset=utf-8' }, function( data ) {
+			document.getElementById("status").innerHTML = data;
+		});				
+	  }		
+
+
+		function jsonify(parentEl, 
+			 attributeName,
+			 separatorName, 
+			 options = {'usenull':true, 'parsenumbers':true}) {
+
+			parentEl = typeof(parentEl) === typeof undefined || parentEl === null  ? document.body : parentEl;
+			attributeName = typeof(attributeName) === typeof undefined || attributeName === null ? "serialize-as" : attributeName;
+			separatorName = typeof(separatorName) === typeof undefined || separatorName === null ? "serialize-separator" : separatorName;
+
+		  var json = {};
+		  $(parentEl).find('[' + attributeName + ']').each(function() {
+			var val = null;
+			if ($(this).is(':checkbox') || $(this).is(':radio')) {
+			  var tmpValueAttr = $(this).attr('value');
+			  if (typeof tmpValueAttr !== typeof undefined && tmpValueAttr !== false) {
+				if (!$(this).is(':checked'))
+				  return;
+				val = $(this).val();
+			  } else {
+				val = $(this).is(':checked');
+			  }
+			} else {
+			  val = $(this).val(); 
+			  if (typeof val === typeof undefined || val === "" ) {
+				val = $(this).attr( 'value' );
+			  }			  
+			  var tmpSepAttrVal = $(this).attr(separatorName);
+			  if( tmpSepAttrVal && val )
+				val = val.split(tmpSepAttrVal);
+			}
+
+			if( options && options['usenull'] 
+				&& (typeof val === typeof undefined || val === "" ) ){
+			  val = null;
+			}
+
+			if( options && options['parsenumbers'] && val 
+				&& !Array.isArray(val) && typeof(val) !== "boolean" 
+				&& isFinite(val) && !isNaN(parseFloat(val)) ) {
+			  if( val.length > 0 && val[0] != "0" )
+				val = !isNaN(parseFloat(val)) ? parseFloat(val) : parseInt(val);
+			}
+
+			var path = $(this).attr(attributeName).split('.');
+			var path_len = path.length; data = null;
+			$.each(path, function(index, key) {
+			  if (data == null)
+				data = json;
+			  if (index + 1 === path_len) {
+				data[key] = val;
+			  } else {
+				if (!(key in data))
+				  data[key] = {};
+				data = data[key]
+			  }
+			});
+		  });
+		  return json;
+		}
+	  
+	</script>
+  
+</html>
+
+
+<!--
+type: search, button, datetime-local, submit => action => form-handler
+
+<input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}">
+
+
+$.ajax({
+    url: '/script.cgi',
+    type: 'DELETE',
+    success: function(result) {
+        // Do something with the result
+    }
+});			
+
+-->
